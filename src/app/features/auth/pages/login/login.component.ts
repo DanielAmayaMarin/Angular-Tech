@@ -10,7 +10,6 @@ import { AlertComponent } from '../../components/AlertComponent';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, AlertComponent],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;

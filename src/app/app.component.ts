@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { AuthService } from './core/application/use-cases/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,16 +12,13 @@ import { Router, RouterOutlet } from '@angular/router';
 export class AppComponent {
   isSidebarOpen = true;
 
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  logout() {
-    // Implementa aquí la lógica de cierre de sesión
-    console.log('Cerrando sesión...');
-    // Por ejemplo, podrías navegar a la página de inicio de sesión:
-    // this.router.navigate(['/login']);
+  ngOnInit() {
+    this.authService.initialize();
   }
 }

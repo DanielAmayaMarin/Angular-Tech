@@ -1,63 +1,78 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { AuthPort } from '../../domain/ports/auth.port';
+import { AuthRepositoryPort } from '../../domain/ports/auth-repository.port';
+import { User } from '../../domain/models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements AuthPort {
+export class AuthService {
   private readonly JWT_TOKEN = 'JWT_TOKEN';
-  private readonly REFRESH_TOKEN = 'REFRESH_TOKEN';
-  private currentUserSubject: BehaviorSubject<any>;
-  public currentUser: Observable<any>;
+  private readonly USER_EMAIL = 'USER_EMAIL';
 
-  constructor(private http: HttpClient) {
-    let currentUser = null;
-    try {
-      const storedUser = localStorage.getItem('currentUser');
-      currentUser = storedUser ? JSON.parse(storedUser) : null;
-    } catch (error) {
-      console.error('Error parsing currentUser from localStorage:', error);
-    }
-    this.currentUserSubject = new BehaviorSubject<any>(currentUser);
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser: Observable<User | null>;
+
+  constructor(@Inject('AuthRepositoryPort') private authRepository: AuthRepositoryPort) {
+    this.currentUserSubject = new BehaviorSubject<User | null>(null);
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post<any>(`http://localhost:8080/api/v1/auth/login`, { email, password })
-      .pipe(
-        tap(tokens => this.doLoginUser(email, tokens)),
-        catchError(this.handleError)
-      );
+  initialize(): void {
+    console.log("initialize")
+    this.loadStoredUser();
   }
 
-  register(cedula: string, nombre: string, apellidos: string, telefono: string, email: string, password: string, rutaImagenPerfil?: string): Observable<string> {
-    return this.http.post<any>(`http://localhost:8080/api/v1/auth/registro`, {cedula, nombre, apellidos, telefono, email, password, rutaImagenPerfil})
-      .pipe(
-        tap(message => console.log(message)),
-        catchError(this.handleError)
-      );
+  login(email: string, password: string): Observable<string> {
+    return this.authRepository.login(email, password).pipe(
+      tap(tokens => this.handleAuthentication(tokens)),
+      catchError(this.handleError)
+    );
   }
-  
-  logout(): Observable<void>  {
+
+  register(user: Omit<User, 'id'>): Observable<string> {
+    return this.authRepository.register(user).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  logout(): Observable<void> {
     return of(undefined).pipe(
       tap(() => this.doLogoutUser())
     );
   }
 
-  getJwtToken() {
+  getCurrentUser(): Observable<User | null> {
+    const email = localStorage.getItem(this.USER_EMAIL);
+    
+    if (!email) {
+      console.warn('No user email found in localStorage');
+      return of(null);
+    }
+
+    return this.authRepository.getCurrentUser(email).pipe(
+      catchError(error => {
+        return throwError(() => new Error('Error fetching user data: ' + error.message));
+      })
+    );
+  }
+
+  getJwtToken(): string | null {
     return localStorage.getItem(this.JWT_TOKEN);
   }
 
-  isLoggedIn() {
+  isLoggedIn(): boolean {
     return !!this.getJwtToken();
   }
 
-  private doLoginUser(email: string, tokens: any) {
-    this.storeTokens(tokens);
-    this.currentUserSubject.next(email);
+  private loadStoredUser(): void {
+    if (this.isLoggedIn()) {
+      this.getCurrentUser().subscribe(
+        user => this.currentUserSubject.next(user),
+        error => console.error('Error loading stored user:', error)
+      );
+    }
   }
 
   private doLogoutUser() {
@@ -65,34 +80,22 @@ export class AuthService implements AuthPort {
     this.currentUserSubject.next(null);
   }
 
-  private getRefreshToken() {
-    return localStorage.getItem(this.REFRESH_TOKEN);
-  }
-
-  private storeJwtToken(jwt: string) {
-    localStorage.setItem(this.JWT_TOKEN, jwt);
-  }
-
-  private storeTokens(tokens: any) {
-    localStorage.setItem(this.JWT_TOKEN, tokens.data);
-  }
-
   private removeTokens() {
     localStorage.removeItem(this.JWT_TOKEN);
-    localStorage.removeItem(this.REFRESH_TOKEN);
+    localStorage.removeItem(this.USER_EMAIL);
   }
 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ha ocurrido un error desconocido';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `${error.error.message}`;
-    } else {
-      if (error.status === 500 && error.error.mensaje) {
-        errorMessage = error.error.mensaje;
-      } else {
-        errorMessage = `Código de error: ${error.status}, mensaje: ${error.message}`;
-      }
-    }
-    return throwError(() => new Error(errorMessage));
+  private handleAuthentication(tokens: any): void {
+    localStorage.setItem(this.JWT_TOKEN, tokens.jwt);
+    localStorage.setItem(this.USER_EMAIL, tokens.email);
+    this.getCurrentUser().subscribe(
+      user => this.currentUserSubject.next(user),
+      error => console.error('Error fetching user after authentication:', error)
+    );
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('An error occurred:', error);
+    return throwError(() => new Error(error.message || 'Server error'));
   }
 }

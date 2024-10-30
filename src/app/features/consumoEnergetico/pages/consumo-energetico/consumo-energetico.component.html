@@ -1,1 +1,56 @@
-<p>consumo-energetico works!</p>
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Consumo Energético</h1>
+    
+    <!-- Filtros -->
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label for="anio" class="block text-sm font-medium text-gray-700">Año</label>
+        <select id="anio" [(ngModel)]="filtros.anio" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option *ngFor="let anio of anios" [value]="anio">{{anio}}</option>
+        </select>
+      </div>
+      <div>
+        <label for="continente" class="block text-sm font-medium text-gray-700">Continente</label>
+        <select id="continente" [(ngModel)]="filtros.continente" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option value="">Todos</option>
+          <option *ngFor="let continente of continentes" [value]="continente">{{continente}}</option>
+        </select>
+      </div>
+      <div>
+        <label for="tipoConsumo" class="block text-sm font-medium text-gray-700">Tipo de Consumo</label>
+        <select id="tipoConsumo" [(ngModel)]="filtros.tipoConsumo" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option value="">Todos</option>
+          <option *ngFor="let tipo of tiposConsumo" [value]="tipo">{{tipo}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-2">Consumo por Continente</h2>
+        <apx-chart
+          [series]="chartOptions['consumoPorContinente'].series"
+          [chart]="chartOptions['consumoPorContinente'].chart"
+          [dataLabels]="chartOptions['consumoPorContinente'].dataLabels"
+          [plotOptions]="chartOptions['consumoPorContinente'].plotOptions"
+          [xaxis]="chartOptions['consumoPorContinente'].xaxis"
+        ></apx-chart>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-2">Tendencia de Consumo Mensual</h2>
+        <apx-chart
+          [series]="chartOptions['tendenciaConsumo'].series"
+          [chart]="chartOptions['tendenciaConsumo'].chart"
+          [xaxis]="chartOptions['tendenciaConsumo'].xaxis"
+          [stroke]="chartOptions['tendenciaConsumo'].stroke"
+          [dataLabels]="chartOptions['tendenciaConsumo'].dataLabels"
+          [markers]="chartOptions['tendenciaConsumo'].markers"
+          [colors]="chartOptions['tendenciaConsumo'].colors"
+          [yaxis]="chartOptions['tendenciaConsumo'].yaxis"
+          [legend]="chartOptions['tendenciaConsumo'].legend"
+          [title]="chartOptions['tendenciaConsumo'].title"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>

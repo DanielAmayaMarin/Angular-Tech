@@ -1,1 +1,54 @@
-<p>produccion-energia works!</p>
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Producción de Energía</h1>
+    
+    <!-- Filtros -->
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label for="anio" class="block text-sm font-medium text-gray-700">Año</label>
+        <select id="anio" [(ngModel)]="filtros.anio" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option *ngFor="let anio of anios" [value]="anio">{{anio}}</option>
+        </select>
+      </div>
+      <div>
+        <label for="pais" class="block text-sm font-medium text-gray-700">País</label>
+        <select id="pais" [(ngModel)]="filtros.pais" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option value="">Todos</option>
+          <option *ngFor="let pais of paises" [value]="pais">{{pais}}</option>
+        </select>
+      </div>
+      <div>
+        <label for="tipoEnergia" class="block text-sm font-medium text-gray-700">Tipo de Energía</label>
+        <select id="tipoEnergia" [(ngModel)]="filtros.tipoEnergia" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+          <option value="">Todos</option>
+          <option *ngFor="let tipo of tiposEnergia" [value]="tipo">{{tipo}}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-2">Producción por Tipo de Energía</h2>
+        <apx-chart
+          [series]="chartOptions['produccionPorTipo'].series"
+          [chart]="chartOptions['produccionPorTipo'].chart"
+          [labels]="chartOptions['produccionPorTipo'].labels"
+          [responsive]="chartOptions['produccionPorTipo'].responsive"
+          [dataLabels]="chartOptions['produccionPorTipo'].dataLabels"
+          [legend]="chartOptions['produccionPorTipo'].legend"
+        ></apx-chart>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-2">Tendencia de Producción</h2>
+        <apx-chart
+          [series]="chartOptions['tendenciaProduccion'].series"
+          [chart]="chartOptions['tendenciaProduccion'].chart"
+          [xaxis]="chartOptions['tendenciaProduccion'].xaxis"
+          [dataLabels]="chartOptions['tendenciaProduccion'].dataLabels"
+          [grid]="chartOptions['tendenciaProduccion'].grid"
+          [stroke]="chartOptions['tendenciaProduccion'].stroke"
+          [title]="chartOptions['tendenciaProduccion'].title"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>

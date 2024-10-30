@@ -3,13 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../../core/application/use-cases/auth.service';
 import { Router } from '@angular/router';
+import { User } from '../../../../core/domain/models/user.model';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './registro.component.html',
-  styleUrl: './registro.component.css'
 })
 export class RegistroComponent implements OnInit {
   registroForm!: FormGroup;
@@ -32,8 +32,8 @@ export class RegistroComponent implements OnInit {
 
   onSubmit() {
     if (this.registroForm.valid) {
-      const { cedula, nombre, apellidos, telefono, email, password, rutaImagenPerfil } = this.registroForm.value;
-      this.authService.register(cedula, nombre, apellidos, telefono, email, password, rutaImagenPerfil).subscribe({
+      const userData: Omit<User, 'id'> = this.registroForm.value;
+      this.authService.register(userData).subscribe({
         next: () => {
           this.router.navigate(['/login']);
         },
