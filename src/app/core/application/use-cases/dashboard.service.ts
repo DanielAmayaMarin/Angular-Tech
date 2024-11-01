@@ -27,6 +27,12 @@ export class DashboardService {
         )
     }
 
+    getEnergiasRenovablesPorRegion(anio:number):Observable<ApiResponse>{
+        return this.dashboardRepositoryPort.getEnergiasRenovablesPorRegion(anio).pipe(
+            catchError(this.handleError)
+        )
+    }
+
 
     private handleError(error: any): Observable<never> {
         console.error('An error occurred:', error);

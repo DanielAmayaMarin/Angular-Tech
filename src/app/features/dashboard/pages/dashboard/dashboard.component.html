@@ -24,16 +24,16 @@
 
   <!-- Charts -->
   <div class="grid gap-6 mb-8 md:grid-cols-2">
-    <div class="min-w-0 hidden p-4 bg-white rounded-lg shadow-xs">
-      <h4 class="mb-4 font-semibold text-gray-800">Producción vs Consumo</h4>
+    <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs">
+      <h4 class="mb-4 font-semibold text-gray-800">Porcentaje de Energía Renovable por Región</h4>
       <apx-chart
-        [series]="productionVsConsumptionChartOptions.series"
-        [chart]="productionVsConsumptionChartOptions.chart"
-        [xaxis]="productionVsConsumptionChartOptions.xaxis"
-        [stroke]="productionVsConsumptionChartOptions.stroke"
-        [colors]="productionVsConsumptionChartOptions.colors"
-        [dataLabels]="productionVsConsumptionChartOptions.dataLabels"
-      ></apx-chart>
+        [series]="renewableEnergyChartOptions.series"
+        [chart]="renewableEnergyChartOptions.chart"
+        [xaxis]="renewableEnergyChartOptions.xaxis"
+        [title]="renewableEnergyChartOptions.title"
+        [tooltip]="renewableEnergyChartOptions.tooltip"
+        [theme]="renewableEnergyChartOptions.theme">
+      </apx-chart>
     </div>
     <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs">
       <h4 class="mb-4 font-semibold text-gray-800">Fuentes de Energía Renovable</h4>

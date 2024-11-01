@@ -14,6 +14,10 @@ export class DashboardHttpAdapter implements DashboardRepositoryPort{
     private apiUrl = 'http://localhost:8080/api/v1/';
 
     constructor(private http: HttpClient) {}
+
+    getEnergiasRenovablesPorRegion(anio: number): Observable<ApiResponse> {
+        return this.http.get<ApiResponse>(`${this.apiUrl}dashboard/energias-renovables-por-region/${anio}`)
+    }
     
     getFuentesDeEnergiaRenovable(): Observable<ApiResponse> {
         return this.http.get<ApiResponse>(`${this.apiUrl}dashboard/fuentes-de-energia-renovable`)

@@ -33,38 +33,8 @@ export class DashboardComponent implements OnInit {
 
   cards: Card[] = [];
 
-  productionVsConsumptionChartOptions: ApexOptions = {
-    series: [
-      { name: 'Producción', data: [31, 40, 28, 51, 42, 109, 100] },
-      { name: 'Consumo', data: [11, 32, 45, 32, 34, 52, 41] }
-    ],
-    chart: {
-      height: 350,
-      type: 'area'
-    },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-    xaxis: {
-      type: 'datetime',
-      categories: [
-        '2018-10-19T00:00:00.000Z',
-        '2018-11-20T00:00:00.000Z',
-        '2018-12-21T00:00:00.000Z',
-        '2018-01-22T00:00:00.000Z',
-        '2018-02-23T00:00:00.000Z',
-        '2018-03-24T00:00:00.000Z',
-        '2018-04-25T00:00:00.000Z'
-      ]
-    },
-    colors: ['#10B981', '#3B82F6']
-  };
-
   renewableSourcesChartOptions: ApexOptions = {
-    series: [44, 55, 13, 30],
+    series: [1],
     chart: {
       type: 'donut',
       height: 350
@@ -83,6 +53,41 @@ export class DashboardComponent implements OnInit {
       }
     }]
   };
+
+
+  renewableEnergyChartOptions: ApexOptions = {
+    series: [{
+      name: "Porcentaje de Energía Renovable",
+      data: []
+    }],
+    chart: {
+      type: "bar",
+      height: 400,
+      toolbar: {
+        show: true
+      }
+    },
+    xaxis: {
+      categories: ['North America','Antarctica','Africa','Asia','Oceania','South America','Europe'],
+      labels: {
+        style: {
+          fontSize: '12px'
+        }
+      }
+    },
+    tooltip: {
+      y: {
+        formatter: function(value) {
+          return value + "%";
+        }
+      }
+    },
+    theme: {
+      mode: 'light',
+      palette: 'palette1'
+    }
+  };
+
 
   getProduccionTotalPorTipoYAnio() {
     const year = new Date().getFullYear().toString();
@@ -134,10 +139,35 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
+  getRenewableEnergyByRegion() {
+    const year = new Date().getFullYear().toString();
+    this.dashboardService.getEnergiasRenovablesPorRegion(parseInt(year)).subscribe(
+      (data: ApiResponse) => {
+        if (data.codigo === 200 && Array.isArray(data.data)) {
+          this.updateRenewableEnergyChart(data.data);
+        }
+      }
+    );
+  }
+
+  updateRenewableEnergyChart(data: any[]) {
+    const regions = data.map(item => item.region);
+    const percentages = data.map(item => item.porcentaje_renovable);
+
+    this.renewableEnergyChartOptions.xaxis!.categories = regions;
+    this.renewableEnergyChartOptions.series = [{
+      name: "Porcentaje de Energía Renovable",
+      data: percentages
+    }];
+
+    this.renewableEnergyChartOptions = { ...this.renewableEnergyChartOptions };
+  }
+
 
 
   ngOnInit(): void {
     this.getProduccionTotalPorTipoYAnio();
     this.fuentesDeEnergiaRenovable()
+    this.getRenewableEnergyByRegion();
   }
 }
