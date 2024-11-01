@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../../core/domain/models/user.model';
 import { UsuariosService } from '../../../../core/application/use-cases/usuarios.service';
-import { DashboardService } from '../../../../core/application/use-cases/dashboard.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-configuracion',
@@ -38,31 +38,62 @@ export class ConfiguracionComponent implements OnInit {
 
   submitUser() {
     if (this.editingUser) {
-      this.usuariosService.editUsuario(this.currentUser).subscribe(
-        () => {
-          this.loadUsers();
-          this.cancelEdit();
-        },
-        (error) => {
-          console.error('Error al actualizar usuario', error);
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¿Quieres actualizar este usuario?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#16a34a',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, actualizar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.usuariosService.editUsuario(this.currentUser).subscribe(
+            () => {
+              this.loadUsers();
+              this.cancelEdit();
+              Swal.fire(
+                '¡Actualizado!',
+                'El usuario ha sido actualizado.',
+                'success'
+              );
+            },
+            (error) => {
+              console.error('Error al actualizar usuario', error);
+              Swal.fire(
+                'Error',
+                'No se pudo actualizar el usuario.',
+                'error'
+              );
+            }
+          );
         }
-      );
+      });
     } else {
       this.http.post('/api/v1/usuarios', this.currentUser).subscribe(
         () => {
           this.loadUsers();
           this.cancelEdit();
+          Swal.fire(
+            '¡Agregado!',
+            'El usuario ha sido agregado.',
+            'success'
+          );
         },
         (error) => {
           console.error('Error al agregar usuario', error);
+          Swal.fire(
+            'Error',
+            'No se pudo agregar el usuario.',
+            'error'
+          );
         }
       );
     }
   }
 
-
   editUser(user: User) {
-    console.log(user)
     this.editingUser = user;
     this.currentUser = { ...user };
     this.showAddUserForm = true;

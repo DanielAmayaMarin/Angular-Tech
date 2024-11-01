@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/application/use-cases/auth.service';
 import { CommonModule } from '@angular/common';
 import { AlertComponent } from '../../components/AlertComponent';
+import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -14,9 +16,6 @@ import { AlertComponent } from '../../components/AlertComponent';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   alertMessage: string = '';
-  alertType: 'error' | 'success' = 'error';
-  showAlert: boolean = false;
-  private alertTimer: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,41 +38,22 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/home']);
         },
         error: (error) => {
-          let errorMessage = error instanceof Error ? error.message : String(error);
-          const errorPrefix = "Error: ";
-          if (errorMessage.startsWith(errorPrefix)) {
-            console.log(errorMessage)
-            errorMessage = errorMessage.substring(errorPrefix.length);
-          }
-          this.showAlertWithTimer('error', errorMessage || 'Ha ocurrido un error al iniciar sesión');
+          this.showErrorAlert('Ha ocurrido un error al iniciar sesión');
         }
       });
     }
   }
 
-  ngOnDestroy() {
-    this.clearAlertTimer();
-  }
+  private showErrorAlert(message: string) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: message,
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#10B981',
+      timer: 5000,
+      timerProgressBar: true
+    });
 
-  showAlertWithTimer(type: 'error' | 'success', message: string) {
-    this.showAlert = true;
-    this.alertType = type;
-    this.alertMessage = message;
-    this.clearAlertTimer();
-    this.alertTimer = setTimeout(() => {
-      this.onAlertClosed();
-    }, 8000);
-  }
-
-  onAlertClosed() {
-    this.showAlert = false;
-    this.clearAlertTimer();
-  }
-
-  private clearAlertTimer() {
-    if (this.alertTimer) {
-      clearTimeout(this.alertTimer);
-      this.alertTimer = null;
-    }
   }
 }
