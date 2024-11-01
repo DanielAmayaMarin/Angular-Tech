@@ -8,9 +8,9 @@ export interface User {
   rutaImagenPerfil?: string;
 }
 
-export interface ApiResponse {
+export interface ApiResponse <T = any>  {
   codigo: number;
-  data: User[];
+  data: T;
   mensaje: string;
 }
 

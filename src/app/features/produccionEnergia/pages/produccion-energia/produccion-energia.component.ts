@@ -2,6 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
+import { ProduccionEnergiaService } from '../../../../core/application/use-cases/produccion-energia.service';
+import { ApiResponse } from '../../../../core/domain/models/user.model';
+
+interface ProduccionEnergia {
+  anio: number;
+  pais: string;
+  mes: number;
+  produccion: number;
+  tipoEnergia: string;
+}
 
 @Component({
   selector: 'app-produccion-energia',
@@ -9,26 +19,33 @@ import { ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
   imports: [CommonModule, FormsModule, NgApexchartsModule],
   templateUrl: './produccion-energia.component.html',
 })
-export class ProduccionEnergiaComponent implements OnInit {
 
+
+export class ProduccionEnergiaComponent implements OnInit {
   filtros = {
     anio: new Date().getFullYear(),
     pais: '',
     tipoEnergia: ''
   };
 
-  anios = Array.from({length: 5}, (_, i) => new Date().getFullYear() - i);
-  paises = ['España', 'Francia', 'Alemania', 'Italia', 'Portugal'];
-  tiposEnergia = ['Solar', 'Eólica', 'Hidroeléctrica', 'Biomasa', 'Geotérmica'];
+  datosCompletos: ProduccionEnergia[] = [];
+  datosFiltrados: ProduccionEnergia[] = [];
+
+  anios: number[] = [];
+  paises: string[] = [];
+  tiposEnergia: string[] = [];
 
   chartOptions: { [key: string]: ApexOptions } = {
     produccionPorTipo: {
-      series: [44, 55, 13, 43, 22],
+      series: [1],
       chart: {
         type: 'pie',
-        height: 350
+        height: 350,
+        animations: {
+          enabled: true
+        }
       },
-      labels: this.tiposEnergia,
+      labels: ['Cargando...'],
       responsive: [{
         breakpoint: 480,
         options: {
@@ -43,30 +60,39 @@ export class ProduccionEnergiaComponent implements OnInit {
       dataLabels: {
         enabled: true,
         formatter: function (val, opts) {
-          return opts.w.config.series[opts.seriesIndex].toFixed() + ' GWh'
+          return opts.w.config.series[opts.seriesIndex].toFixed(2) + ' GWh'
         },
       },
       legend: {
         position: 'bottom'
+      },
+      noData: {
+        text: 'Cargando datos...',
+        align: 'center',
+        verticalAlign: 'middle'
       }
     },
     tendenciaProduccion: {
       series: [{
         name: "Producción Total",
-        data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       }],
       chart: {
         height: 350,
         type: 'line',
         zoom: {
           enabled: false
+        },
+        animations: {
+          enabled: true
         }
       },
       dataLabels: {
         enabled: false
       },
       stroke: {
-        curve: 'straight'
+        curve: 'straight',
+        width: 2
       },
       grid: {
         row: {
@@ -75,42 +101,94 @@ export class ProduccionEnergiaComponent implements OnInit {
         },
       },
       xaxis: {
-        categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'],
+        categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+      },
+      noData: {
+        text: 'Cargando datos...',
+        align: 'center',
+        verticalAlign: 'middle'
       }
     }
   };
 
-  constructor() { }
+  constructor(private produccionEnergiaService: ProduccionEnergiaService) { }
 
   ngOnInit(): void {
-    this.aplicarFiltros();
+    this.getProduccionEnergetica();
+  }
+
+  getProduccionEnergetica() {
+    this.produccionEnergiaService.getProduccionEnergetica().subscribe({
+      next: (data: ApiResponse) => {
+        this.datosCompletos = data.data.map((item: ProduccionEnergia) => ({
+          anio: item.anio,
+          pais: item.pais,
+          mes: item.mes,
+          produccion: item.produccion,
+          tipoEnergia: item.tipoEnergia
+        }));
+        this.inicializarFiltros();
+        this.aplicarFiltros();
+      },
+      error: (error) => {
+        console.error('Error al cargar los datos:', error);
+      }
+    });
+  }
+
+  inicializarFiltros() {
+    this.anios = [...new Set(this.datosCompletos.map(item => item.anio))].sort((a, b) => b - a);
+    this.paises = [ ...new Set(this.datosCompletos.map(item => item.pais))].sort();
+    this.tiposEnergia = [ ...new Set(this.datosCompletos.map(item => item.tipoEnergia))].sort();
+    this.filtros.anio = this.anios[0] || new Date().getFullYear();
+    this.filtros.pais = 'Colombia';
+    this.filtros.tipoEnergia = '';
   }
 
   aplicarFiltros() {
-    // Aquí iría la lógica para actualizar los datos de las gráficas
-    // basándose en los filtros seleccionados
-    console.log('Filtros aplicados:', this.filtros);
-    // Simulación de actualización de datos
+    this.datosFiltrados = this.datosCompletos.filter(item => {
+      const cumpleAnio = item.anio == this.filtros.anio;
+      const cumplePais = this.filtros.pais === 'Colombia' || item.pais == this.filtros.pais;
+      const cumpleTipoEnergia = this.filtros.tipoEnergia == '' || item.tipoEnergia == this.filtros.tipoEnergia;
+      return cumpleAnio && cumplePais && cumpleTipoEnergia;
+    });
     this.actualizarGraficas();
   }
 
   actualizarGraficas() {
-    // Simulación de actualización de datos para las gráficas
-    this.chartOptions['produccionPorTipo'].series = [
-      Math.random() * 100,
-      Math.random() * 100,
-      Math.random() * 100,
-      Math.random() * 100,
-      Math.random() * 100
-    ];
-    
-    this.chartOptions['tendenciaProduccion'].series = [{
-      name: "Producción Total",
-      data: Array.from({length: 9}, () => Math.floor(Math.random() * 100) + 20)
-    }];
-    
-    // Forzar la actualización de las gráficas
-    this.chartOptions = {...this.chartOptions};
+    if (this.datosFiltrados.length === 0) {
+      this.chartOptions["produccionPorTipo"].series = [0];
+      this.chartOptions["produccionPorTipo"].labels = ['Sin datos'];
+      this.chartOptions["tendenciaProduccion"].series = [{
+        name: "Producción Total",
+        data: Array(12).fill(0)
+      }];
+    } else {
+      const produccionPorTipo = this.datosFiltrados.reduce((acc, item) => {
+        acc[item.tipoEnergia] = (acc[item.tipoEnergia] || 0) + item.produccion;
+        return acc;
+      }, {} as {[key: string]: number});
+
+      this.chartOptions["produccionPorTipo"].series = Object.values(produccionPorTipo);
+      this.chartOptions["produccionPorTipo"].labels = Object.keys(produccionPorTipo);
+      const produccionPorMes = Array(12).fill(0);
+      this.datosFiltrados.forEach(item => {
+        produccionPorMes[item.mes - 1] += item.produccion;
+      });
+
+      this.chartOptions["tendenciaProduccion"].series = [{
+        name: "Producción Total",
+        data: produccionPorMes
+      }];
+    }
+    this.chartOptions = {
+      ...this.chartOptions,
+      produccionPorTipo: { ...this.chartOptions["produccionPorTipo"] },
+      tendenciaProduccion: { ...this.chartOptions["tendenciaProduccion"] }
+    };
   }
-  
+
+  onFiltroChange() {
+    this.aplicarFiltros();
+  }
 }

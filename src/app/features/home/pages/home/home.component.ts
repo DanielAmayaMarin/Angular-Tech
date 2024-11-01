@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../../core/application/use-cases/auth.service';
+import { DashboardService } from '../../../../core/application/use-cases/dashboard.service';
 
 
 @Component({
@@ -15,7 +16,8 @@ export class HomeComponent implements OnInit {
     isSidebarOpen = true;
     currentUser: any; 
   
-    constructor(private authService: AuthService, private router: Router) {}
+  
+    constructor(private authService:AuthService, private router:Router) {}
   
     getCurrentUser() {
       this.authService.getCurrentUser().subscribe({

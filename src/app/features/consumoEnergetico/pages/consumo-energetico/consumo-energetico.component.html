@@ -12,7 +12,6 @@
       <div>
         <label for="continente" class="block text-sm font-medium text-gray-700">Continente</label>
         <select id="continente" [(ngModel)]="filtros.continente" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-          <option value="">Todos</option>
           <option *ngFor="let continente of continentes" [value]="continente">{{continente}}</option>
         </select>
       </div>
@@ -20,7 +19,7 @@
         <label for="tipoConsumo" class="block text-sm font-medium text-gray-700">Tipo de Consumo</label>
         <select id="tipoConsumo" [(ngModel)]="filtros.tipoConsumo" (change)="aplicarFiltros()" class="mt-2 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
           <option value="">Todos</option>
-          <option *ngFor="let tipo of tiposConsumo" [value]="tipo">{{tipo}}</option>
+          <option *ngFor="let tipo of tiposConsumo" [value]="tipo">{{obtenerNombreTipoConsumo(tipo)}}</option>
         </select>
       </div>
     </div>

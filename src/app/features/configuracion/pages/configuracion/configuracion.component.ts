@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../../../core/domain/models/user.model';
 import { UsuariosService } from '../../../../core/application/use-cases/usuarios.service';
+import { DashboardService } from '../../../../core/application/use-cases/dashboard.service';
 
 @Component({
   selector: 'app-configuracion',

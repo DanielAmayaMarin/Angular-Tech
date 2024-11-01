@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
           let errorMessage = error instanceof Error ? error.message : String(error);
           const errorPrefix = "Error: ";
           if (errorMessage.startsWith(errorPrefix)) {
+            console.log(errorMessage)
             errorMessage = errorMessage.substring(errorPrefix.length);
           }
           this.showAlertWithTimer('error', errorMessage || 'Ha ocurrido un error al iniciar sesión');

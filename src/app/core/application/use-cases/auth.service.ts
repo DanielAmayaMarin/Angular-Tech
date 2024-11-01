@@ -20,7 +20,6 @@ export class AuthService {
   }
 
   initialize(): void {
-    console.log("initialize")
     this.loadStoredUser();
   }
 
