@@ -13,7 +13,7 @@ import { DashboardService } from '../../../../core/application/use-cases/dashboa
 
 export class HomeComponent implements OnInit {
 
-    isSidebarOpen = true;
+    isSidebarOpen = false;
     currentUser: any; 
   
   
