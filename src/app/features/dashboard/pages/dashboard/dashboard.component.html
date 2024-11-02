@@ -3,7 +3,6 @@
     Dashboard de Energía Renovable
   </h2>
   
-  <!-- Cards -->
   <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
     <div *ngFor="let card of cards" class="flex items-center p-4 bg-white rounded-lg shadow-xs">
       <div [class]="'p-3 mr-4 text-' + card.color + '-500 bg-' + card.color + '-100 rounded-full'">
@@ -22,7 +21,6 @@
     </div>
   </div>
 
-  <!-- Charts -->
   <div class="grid gap-6 mb-8 md:grid-cols-2">
     <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs">
       <h4 class="mb-4 font-semibold text-gray-800">Porcentaje de Energía Renovable por Región</h4>

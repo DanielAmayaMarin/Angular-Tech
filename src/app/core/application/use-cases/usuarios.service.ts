@@ -13,6 +13,13 @@ export class UsuariosService {
 
     }
 
+    getUsuarioId(): Observable<ApiResponse> {
+        let email = localStorage.getItem('USER_EMAIL') || ""
+        return this.usuariosRepositoryPort.getUsuarioId(email).pipe(
+            catchError(this.handleError)
+        )
+    }
+
     getUsuarios(): Observable<ApiResponse>{
         return this.usuariosRepositoryPort.getUsuarios().pipe(
             catchError(this.handleError)
@@ -21,6 +28,12 @@ export class UsuariosService {
 
     editUsuario(user: User): Observable<ApiResponse>{
         return this.usuariosRepositoryPort.editUsuario(user).pipe(
+            catchError(this.handleError)
+        )
+    }
+
+    deleteUsuario(cedula: string): Observable<ApiResponse>{
+        return this.usuariosRepositoryPort.deleteUsuario(cedula).pipe(
             catchError(this.handleError)
         )
     }

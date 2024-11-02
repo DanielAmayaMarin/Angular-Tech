@@ -9,6 +9,7 @@ import { InformesComponent } from './features/informes/pages/informes/informes.c
 import { ConfiguracionComponent } from './features/configuracion/pages/configuracion/configuracion.component';
 import { RegistroComponent } from './features/auth/pages/registro/registro.component';
 import { LoginGuard } from './core/infrastructure/guards/login.guard';
+import { PerfilComponent } from './features/perfil/components/perfil/perfil.component';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
@@ -23,6 +24,7 @@ export const routes: Routes = [
         { path: 'consumo-energetico', component: ConsumoEnergeticoComponent },
         { path: 'informes', component: InformesComponent },
         { path: 'configuracion', component: ConfiguracionComponent },
+        { path: 'perfil', component: PerfilComponent },
         { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
       ]
     },

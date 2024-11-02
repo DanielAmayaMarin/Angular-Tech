@@ -1,0 +1,27 @@
+<div class="w-full max-w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <!-- Contenedor de tabs con borde inferior más visible -->
+    <nav class="flex border-b-2 border-gray-200 bg-white" role="tablist">
+      <button 
+        *ngFor="let tab of tabs"
+        role="tab"
+        [attr.aria-selected]="activeTab === tab.id"
+        class="relative min-w-[120px] py-4 px-8 text-base font-medium focus:outline-none"
+        [class.text-green-600]="activeTab === tab.id"
+        [class.text-gray-500]="activeTab !== tab.id"
+        [class.after:absolute]="activeTab === tab.id"
+        [class.after:bottom-[-2px]]="activeTab === tab.id"
+        [class.after:left-0]="activeTab === tab.id"
+        [class.after:w-full]="activeTab === tab.id"
+        [class.after:h-0.5]="activeTab === tab.id"
+        [class.after:bg-blue-600]="activeTab === tab.id"
+        (click)="setActiveTab(tab.id)">
+        {{ tab.label }}
+      </button>
+    </nav>
+    
+    <!-- Contenedor del contenido con padding y fondo blanco -->
+    <div class="bg-white p-6" role="tabpanel">
+      <app-users *ngIf="activeTab === 'users'"></app-users>
+      <app-paises *ngIf="activeTab === 'paises'"></app-paises>
+    </div>
+  </div>

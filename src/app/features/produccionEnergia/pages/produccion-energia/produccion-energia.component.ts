@@ -26,6 +26,7 @@ export class ProduccionEnergiaComponent implements OnInit {
     anio: new Date().getFullYear(),
     pais: '',
     tipoEnergia: ''
+    //tiposEnergia: [] as string[]
   };
 
   datosCompletos: ProduccionEnergia[] = [];
@@ -142,7 +143,9 @@ export class ProduccionEnergiaComponent implements OnInit {
     this.tiposEnergia = [ ...new Set(this.datosCompletos.map(item => item.tipoEnergia))].sort();
     this.filtros.anio = this.anios[0] || new Date().getFullYear();
     this.filtros.pais = 'Colombia';
+    //this.filtros.tiposEnergia = [];
     this.filtros.tipoEnergia = '';
+
   }
 
   aplicarFiltros() {
@@ -154,6 +157,16 @@ export class ProduccionEnergiaComponent implements OnInit {
     });
     this.actualizarGraficas();
   }
+
+    /*aplicarFiltros() {
+      this.datosFiltrados = this.datosCompletos.filter(item => {
+        const cumpleAnio = item.anio == this.filtros.anio;
+        const cumplePais = this.filtros.pais === 'Colombia' || item.pais == this.filtros.pais;
+        const cumpleTipoEnergia = this.filtros.tiposEnergia.length === 0 || this.filtros.tiposEnergia.includes(item.tipoEnergia);
+        return cumpleAnio && cumplePais && cumpleTipoEnergia;
+      });
+      this.actualizarGraficas();
+    }*/
 
   actualizarGraficas() {
     if (this.datosFiltrados.length === 0) {
@@ -191,4 +204,14 @@ export class ProduccionEnergiaComponent implements OnInit {
   onFiltroChange() {
     this.aplicarFiltros();
   }
+
+  /*toggleTipoEnergia(tipoEnergia: string) {
+    const index = this.filtros.tiposEnergia.indexOf(tipoEnergia);
+    if (index > -1) {
+      this.filtros.tiposEnergia.splice(index, 1);
+    } else {
+      this.filtros.tiposEnergia.push(tipoEnergia);
+    }
+    this.aplicarFiltros();
+  }*/
 }

@@ -9,6 +9,7 @@ import { UsuariosHttpAdapter } from './core/infrastructure/adapters/usuarios-htt
 import { DashboardHttpAdapter } from './core/infrastructure/adapters/dashboard-http.adapter';
 import { ProduccionEnergiaHttpAdapter } from './core/infrastructure/adapters/produccion-energia-http-adapter';
 import { ConsumoEnergiaHttpAdapter } from './core/infrastructure/adapters/consumo-energia-http-adapter';
+import { PaisHttpAdapter } from './core/infrastructure/adapters/pais-http.adapter';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     { provide: 'UsuariosRepositoryPort', useClass: UsuariosHttpAdapter },
     { provide: 'DashboardRepositoryPort', useClass: DashboardHttpAdapter },
     { provide: 'ProduccionEnergiaRepositoryPort', useClass: ProduccionEnergiaHttpAdapter },
-    { provide: 'ConsumoEnergiaRepositoryPort', useClass: ConsumoEnergiaHttpAdapter }
+    { provide: 'ConsumoEnergiaRepositoryPort', useClass: ConsumoEnergiaHttpAdapter },
+    { provide: 'PaisRepositoryPort', useClass: PaisHttpAdapter }
   ]
 };

@@ -92,14 +92,12 @@ export class InformesComponent implements OnInit {
   }
 
   updateReport() {
-    // Aquí se implementaría la lógica para actualizar los datos según los filtros
     console.log('Actualizando informe con filtros:', this.filters);
     this.updateCharts();
     this.updateTable();
   }
 
   updateCharts() {
-    // Simulación de actualización de datos para las gráficas
     this.chartOptions['mainChart'].series = [{
       name: this.filters.tipoInforme === 'consumo' ? 'Consumo' : 'Producción',
       data: Array.from({length: 9}, () => Math.floor(Math.random() * 100) + 20)
@@ -112,13 +110,10 @@ export class InformesComponent implements OnInit {
       Math.random() * 100,
       Math.random() * 100
     ];
-
-    // Forzar la actualización de las gráficas
     this.chartOptions = {...this.chartOptions};
   }
 
   updateTable() {
-    // Actualizar headers según el tipo de informe
     switch(this.filters.tipoInforme) {
       case 'consumo':
         this.tableHeaders = ['País', 'Consumo Total', 'Consumo Mensual', 'Media'];
@@ -134,7 +129,6 @@ export class InformesComponent implements OnInit {
         break;
     }
 
-    // Simulación de datos de tabla
     this.tableData = Array.from({length: 5}, () => 
       Array.from({length: this.tableHeaders.length}, () => 
         Math.floor(Math.random() * 1000)

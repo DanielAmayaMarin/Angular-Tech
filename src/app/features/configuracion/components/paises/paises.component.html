@@ -1,0 +1,59 @@
+<div class="container mx-auto p-4">
+    <div class="mb-4">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (ngModelChange)="applyFilters()"
+        placeholder="Buscar por nombre o continente" 
+        class="p-2 border rounded w-full outline-none focus:ring-2 focus:ring-green-600 focus:border-green-600 transition-colors"
+      >
+    </div>
+  
+    <table class="min-w-full bg-white border rounded-lg overflow-hidden">
+      <thead class="bg-gray-100/35">
+        <tr>
+          <th class="py-2 text-left px-4 text-green-600 border-b cursor-pointer" (click)="onSort('continente')">
+            Continente
+            <span *ngIf="sortColumn === 'continente'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th class="py-2 text-left px-4 text-green-600 border-b cursor-pointer" (click)="onSort('nombre')">
+            Nombre
+            <span *ngIf="sortColumn === 'nombre'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th class="py-2 text-left px-4 text-green-600 border-b cursor-pointer" (click)="onSort('poblacion')">
+            Población
+            <span *ngIf="sortColumn === 'poblacion'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th class="py-2 text-left px-4 text-green-600 border-b cursor-pointer" (click)="onSort('area_km2')">
+            Área Km²
+            <span *ngIf="sortColumn === 'area_km2'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pais of pagedPaises" class="hover:bg-gray-50">
+          <td class="py-2 px-4 border-b">{{pais.continente}}</td>
+          <td class="py-2 px-4 border-b">{{pais.nombre}}</td>
+          <td class="py-2 px-4 border-b">{{pais.poblacion.toLocaleString()}}</td>
+          <td class="py-2 px-4 border-b">{{pais.area_km2.toLocaleString()}}</td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div class="mt-4 flex  justify-between items-center">
+      <div class="text-green-600">
+        Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ math.min(currentPage * itemsPerPage, filteredPaises.length) }} de {{ filteredPaises.length }} países
+      </div>
+      <div>
+        <button 
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+          (click)="onPageChange(i + 1)"
+          [class.bg-blue-500]="currentPage === i + 1"
+          [class.text-white]="currentPage === i + 1"
+          class="mx-1 px-3 py-1 rounded border"
+        >
+          {{ i + 1 }}
+        </button>
+      </div>
+    </div>
+  </div>

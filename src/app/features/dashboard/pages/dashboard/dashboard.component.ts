@@ -132,10 +132,10 @@ export class DashboardComponent implements OnInit {
 
   updateCards(data: ObtenerMetricasPrincipales) {
     this.cards = [
-      { title: 'Producción Total', value: `${data.produccion_total?.toFixed(2) ?? '0'} GWh`, color: 'green', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-      { title: 'Consumo Total', value: `${data.consumo_total?.toFixed(2) ?? '0'} GWh`, color: 'blue', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+      { title: 'Producción Total', value: `${data.produccion_total?.toFixed(2) ?? '0'} GWh`, color: 'green', icon: 'M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7-5-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z' },
+      { title: 'Consumo Total', value: `${data.consumo_total?.toFixed(2) ?? '0'} GWh`, color: 'green', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
       { title: 'Eficiencia Energética', value: `${(data.eficiencia ? data.eficiencia * 100 : 0).toFixed(1)}%`, color: 'teal', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-      { title: 'Ahorro de CO2', value: `${((data.produccion_total ?? 0) - (data.consumo_total ?? 0)).toFixed(2)} Tn`, color: 'orange', icon: 'M13 10V3L4 14h7v7l9-11h-7z' }
+      { title: 'Ahorro de CO2', value: `${((data.produccion_total ?? 0) - (data.consumo_total ?? 0)).toFixed(2)} Tn`, color: 'orange', icon: 'M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z' }
     ];
   }
 

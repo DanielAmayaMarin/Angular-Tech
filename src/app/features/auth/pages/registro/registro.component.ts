@@ -26,7 +26,6 @@ export class RegistroComponent implements OnInit {
       telefono: ['', [Validators.maxLength(20)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
       password: ['', [Validators.required]],
-      rutaImagenPerfil: ['']
     });
   }
 
